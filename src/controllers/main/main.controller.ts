@@ -1,37 +1,19 @@
 import { spotifyApi } from '../../app';
 import { Request, Response } from 'express';
 import { Artist, Body, Curated, Item } from '../../lib/types';
-import { log } from 'console';
 
 export const mainController = async (req: Request, res: Response) => {
-  const { track, artist } = req.query;
+  const { id } = req.query;
+
+  let ID = id as string;
 
   //----->object store<------
-  let searchedArtist = {} as Item;
   let recommendedArtists = [] as Artist[];
   let topTracks = [] as Curated[];
 
-  //-------> search for track <-------
-  if (track || artist) {
-    try {
-      const response = await spotifyApi.searchTracks(
-        `${track ? `track:${track}` : `artist:${artist}`}`
-      );
-      if (response.statusCode === 200) {
-        const data = response.body as Body;
-        searchedArtist = data.tracks.items[0];
-      }
-    } catch (error: any) {
-      res.send({ error: error.message });
-    }
-  } else {
-    res.send({ error: 'No track or artist provided' });
-  }
-
   //------>Search for recommendations<-----
-  if (searchedArtist) {
-    const artistID = searchedArtist.artists[0].id;
-    const response = await spotifyApi.getArtistRelatedArtists(artistID);
+  if (ID) {
+    const response = await spotifyApi.getArtistRelatedArtists(ID);
     if (response.statusCode === 200) {
       const data = response.body.artists as Artist[];
       recommendedArtists = data;
@@ -104,11 +86,11 @@ export const mainController = async (req: Request, res: Response) => {
       return {
         features: { ...data.body },
         data: { ...track },
-        origin: {
-          trackName: searchedArtist.name,
-          artistName: searchedArtist.artists[0].name,
-          img: searchedArtist.album.images,
-        },
+        // origin: {
+        //   trackName: searchedArtist.name,
+        //   artistName: searchedArtist.artists[0].name,
+        //   img: searchedArtist.album.images,
+        // },
       };
     });
     res.send(data);
