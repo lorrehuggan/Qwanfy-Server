@@ -3,15 +3,19 @@ import { Request, Response } from 'express';
 import { Artist, Body, Curated, Item } from '../../lib/types';
 
 export const mainController = async (req: Request, res: Response) => {
-  const { id } = req.query;
-
-  let ID = id as string;
+  let ID = '';
 
   //----->object store<------
   let recommendedArtists = [] as Artist[];
   let topTracks = [] as Curated[];
 
   //------>Search for recommendations<-----
+
+  if (req.query.id) {
+    ID = req.query.id as string;
+  } else {
+    res.send({ error: 'No ID provided' });
+  }
   if (ID) {
     const response = await spotifyApi.getArtistRelatedArtists(ID);
     if (response.statusCode === 200) {
@@ -86,11 +90,6 @@ export const mainController = async (req: Request, res: Response) => {
       return {
         features: { ...data.body },
         data: { ...track },
-        // origin: {
-        //   trackName: searchedArtist.name,
-        //   artistName: searchedArtist.artists[0].name,
-        //   img: searchedArtist.album.images,
-        // },
       };
     });
     res.send(data);

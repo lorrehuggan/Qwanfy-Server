@@ -14,6 +14,8 @@ export const spotifyApi = new SpotifyWebApi({
   accessToken: process.env.ACCESS_TOKEN,
 });
 
+spotifyApi.clientCredentialsGrant;
+
 const app: Application = express();
 
 app.use(helmet());

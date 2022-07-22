@@ -18,7 +18,12 @@ export const preSearchController = async (req: Request, res: Response) => {
             return artist.artists[0].id;
           });
           const response = await spotifyApi.getArtists(artistIDs);
-          res.send(response.body.artists);
+          const filteredArray = response.body.artists.filter(
+            (obj, index, arr) => {
+              return arr.map((mapObj) => mapObj.id).indexOf(obj.id) === index;
+            }
+          );
+          res.send(filteredArray);
         }
         if (track) {
           res.send(data);
