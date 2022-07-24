@@ -9,6 +9,17 @@ export const preSearchController = async (
   next: NextFunction
 ) => {
   const { track, artist } = req.query;
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    next(ApiError.badRequest('Authorization header is missing'));
+    return;
+  }
+
+  if (authorization !== process.env.AUTH_TOKEN) {
+    next(ApiError.badRequest('Authorization token is invalid'));
+    return;
+  }
 
   //-------> search for track <-------
   if (track || artist) {

@@ -10,6 +10,17 @@ export const mainController = async (
 ) => {
   let ID = '';
 
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    next(ApiError.badRequest('Authorization header is missing'));
+    return;
+  }
+
+  if (authorization !== process.env.AUTH_TOKEN) {
+    next(ApiError.badRequest('Authorization token is invalid'));
+    return;
+  }
   //----->object store<------
   let recommendedArtists = [] as Artist[];
   let topTracks = [] as Curated[];
