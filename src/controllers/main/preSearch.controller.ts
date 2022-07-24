@@ -1,6 +1,7 @@
 import { spotifyApi } from '../../app';
 import { NextFunction, Request, Response } from 'express';
-import { Body, Item } from '../../lib/types';
+import { Body } from '../../lib/types';
+import { ApiError } from '../../error/Error';
 
 export const preSearchController = async (
   req: Request,
@@ -27,16 +28,19 @@ export const preSearchController = async (
               return arr.map((mapObj) => mapObj.id).indexOf(obj.id) === index;
             }
           );
-          res.send(filteredArray);
+          res.send({ error: '', data: filteredArray });
         }
         if (track) {
-          res.send(data);
+          res.send({ error: '', data });
         }
+      } else {
+        next(ApiError.badRequest('No results found'));
       }
     } catch (error: any) {
-      res.status(404).send({ error: error.message });
+      next({});
     }
   } else {
-    res.send({ error: 'No track or artist provided' });
+    next(ApiError.badRequest('Missing track or artist'));
+    return;
   }
 };

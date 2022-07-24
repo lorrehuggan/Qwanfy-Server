@@ -1,6 +1,7 @@
 import { spotifyApi } from '../../app';
 import { Request, Response, NextFunction } from 'express';
 import { Artist, Curated } from '../../lib/types';
+import { ApiError } from '../../error/Error';
 
 export const mainController = async (
   req: Request,
@@ -18,7 +19,7 @@ export const mainController = async (
   if (req.query.id) {
     ID = req.query.id as string;
   } else {
-    res.send({ error: 'No ID provided' });
+    next(ApiError.badRequest('Bad request something went wrong'));
   }
   if (ID) {
     const response = await spotifyApi.getArtistRelatedArtists(ID);
@@ -27,7 +28,7 @@ export const mainController = async (
       recommendedArtists = data;
     }
   } else {
-    res.send({ error: 'unauthorized error' });
+    next(ApiError.badRequest('Bad request something went wrong'));
   }
 
   //-------->Get recommended artist top tracks<--------
@@ -81,7 +82,7 @@ export const mainController = async (
       );
     });
   } else {
-    res.send({ error: 'no recommendations' });
+    next(ApiError.badRequest('Bad request something went wrong'));
   }
 
   //Get audio features for artist top tracks
@@ -96,8 +97,8 @@ export const mainController = async (
         data: { ...track },
       };
     });
-    res.send(data);
+    res.send({ error: '', data });
   } else {
-    res.send({ error: 'no audio features' });
+    next(ApiError.badRequest('Bad request something went wrong'));
   }
 };

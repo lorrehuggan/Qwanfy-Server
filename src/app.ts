@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import mainRoutes from './routes/main/index';
 import dotenv from 'dotenv';
+import { ErrorHandler } from './error/ErrorHandler';
 
 dotenv.config();
 
@@ -13,8 +14,6 @@ export const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.CLIENT_SECRET,
   accessToken: process.env.ACCESS_TOKEN,
 });
-
-spotifyApi.clientCredentialsGrant;
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
@@ -33,7 +32,8 @@ spotifyApi
   });
 
 app.use('/api/main', mainRoutes);
+app.use(ErrorHandler);
 
 app.listen(PORT, () => {
-  console.log('Server is running on port 5000');
+  console.log(`Server is running on port ${PORT}`);
 });
