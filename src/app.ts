@@ -17,6 +17,7 @@ export const spotifyApi = new SpotifyWebApi({
 spotifyApi.clientCredentialsGrant;
 
 const app: Application = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(helmet());
 app.use(cors());
@@ -30,8 +31,6 @@ spotifyApi
   .catch(function (err) {
     console.log(err);
   });
-
-const PORT = process.env.PORT || 5000;
 
 app.use('/api/main', mainRoutes);
 

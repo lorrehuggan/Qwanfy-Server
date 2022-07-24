@@ -1,8 +1,12 @@
 import { spotifyApi } from '../../app';
-import { Request, Response } from 'express';
-import { Artist, Body, Curated, Item } from '../../lib/types';
+import { Request, Response, NextFunction } from 'express';
+import { Artist, Curated } from '../../lib/types';
 
-export const mainController = async (req: Request, res: Response) => {
+export const mainController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let ID = '';
 
   //----->object store<------
@@ -96,5 +100,4 @@ export const mainController = async (req: Request, res: Response) => {
   } else {
     res.send({ error: 'no audio features' });
   }
-  //Create object with selected data
 };

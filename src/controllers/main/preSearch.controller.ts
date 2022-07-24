@@ -1,8 +1,12 @@
 import { spotifyApi } from '../../app';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { Body, Item } from '../../lib/types';
 
-export const preSearchController = async (req: Request, res: Response) => {
+export const preSearchController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { track, artist } = req.query;
 
   //-------> search for track <-------
@@ -30,7 +34,7 @@ export const preSearchController = async (req: Request, res: Response) => {
         }
       }
     } catch (error: any) {
-      res.send({ error: error.message });
+      res.status(404).send({ error: error.message });
     }
   } else {
     res.send({ error: 'No track or artist provided' });
