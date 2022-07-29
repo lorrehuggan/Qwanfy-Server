@@ -1,9 +1,10 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application } from 'express';
 import SpotifyWebApi from 'spotify-web-api-node';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import mainRoutes from './routes/main/index';
+import storRoutes from './routes/stor/index';
 import dotenv from 'dotenv';
 import { ErrorHandler } from './error/ErrorHandler';
 
@@ -13,6 +14,7 @@ export const spotifyApi = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   accessToken: process.env.ACCESS_TOKEN,
+  redirectUri: 'http://localhost:3000/',
 });
 
 const app: Application = express();
@@ -32,6 +34,7 @@ spotifyApi
   });
 
 app.use('/api/main', mainRoutes);
+app.use('/api/stor', storRoutes);
 app.use(ErrorHandler);
 
 app.listen(PORT, () => {
