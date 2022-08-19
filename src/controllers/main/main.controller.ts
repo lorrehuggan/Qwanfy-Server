@@ -12,18 +12,26 @@ export const mainController = async (
 
   const { authorization } = req.headers;
 
-  if (!authorization) {
-    next(ApiError.badRequest('Authorization header is missing'));
-    return;
-  }
+  // if (!authorization) {
+  //   next(ApiError.badRequest('Authorization header is missing'));
+  //   return;
+  // }
 
-  if (authorization !== process.env.AUTH_TOKEN) {
-    next(ApiError.badRequest('Authorization token is invalid'));
-    return;
-  }
+  // if (authorization !== process.env.AUTH_TOKEN) {
+  //   next(ApiError.badRequest('Authorization token is invalid'));
+  //   return;
+  // }
   //----->object store<------
   let recommendedArtists = [] as Artist[];
   let topTracks = [] as Curated[];
+  let queryArtist = {
+    name: '',
+    id: '',
+    image: '',
+    followers: 0,
+    url: '',
+    rating: 0,
+  };
 
   //------>Search for recommendations<-----
 
@@ -37,6 +45,17 @@ export const mainController = async (
     if (response.statusCode === 200) {
       const data = response.body.artists as Artist[];
       recommendedArtists = data;
+    }
+    const artist = await spotifyApi.getArtist(ID);
+    if (artist.statusCode === 200) {
+      queryArtist = {
+        name: artist.body.name,
+        id: artist.body.id,
+        image: artist.body.images[0].url,
+        followers: artist.body.followers.total,
+        url: artist.body.external_urls.spotify,
+        rating: artist.body.popularity,
+      };
     }
   } else {
     next(ApiError.badRequest('Bad request something went wrong'));
@@ -64,9 +83,11 @@ export const mainController = async (
               preview_url: item[1].preview_url,
               images: item[1].album.images,
               albumURL: item[1].album.external_urls.spotify,
+              trackURL: item[1].external_urls.spotify,
               popularity: item[1].popularity,
               explicit: item[1].explicit,
               duration: item[1].duration_ms,
+              trackURI: item[1].uri,
             },
             {
               id: item[2].id,
@@ -76,9 +97,11 @@ export const mainController = async (
               preview_url: item[2].preview_url,
               images: item[2].album.images,
               albumURL: item[2].album.external_urls.spotify,
+              trackURL: item[2].external_urls.spotify,
               popularity: item[2].popularity,
               explicit: item[2].explicit,
               duration: item[2].duration_ms,
+              trackURI: item[2].uri,
             },
             {
               id: item[3].id,
@@ -88,9 +111,11 @@ export const mainController = async (
               preview_url: item[3].preview_url,
               images: item[3].album.images,
               albumURL: item[3].album.external_urls.spotify,
+              trackURL: item[3].external_urls.spotify,
               popularity: item[3].popularity,
               explicit: item[3].explicit,
               duration: item[3].duration_ms,
+              trackURI: item[3].uri,
             }
           );
         });
@@ -114,6 +139,7 @@ export const mainController = async (
       return {
         features: { ...data.body },
         data: { ...track },
+        query: { ...queryArtist },
       };
     });
     res.send({ error: '', data });
