@@ -9,12 +9,12 @@ export const mainController = async (
   next: NextFunction
 ) => {
   let ID = '';
-  const { authorization } = req.headers;
-  console.log(authorization);
+  const { authorization, accesstoken } = req.headers;
 
-  // if (accessToken) {
-  //   spotifyApi.setAccessToken(accessToken);
-  // }
+  if (accesstoken) {
+    spotifyApi.setAccessToken(accesstoken as string);
+  }
+
   if (!authorization) {
     next(ApiError.badRequest('Authorization header is missing'));
     return;
