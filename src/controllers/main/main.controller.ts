@@ -9,18 +9,20 @@ export const mainController = async (
   next: NextFunction
 ) => {
   let ID = '';
-
   const { authorization } = req.headers;
+  console.log(authorization);
 
-  // if (!authorization) {
-  //   next(ApiError.badRequest('Authorization header is missing'));
-  //   return;
+  // if (accessToken) {
+  //   spotifyApi.setAccessToken(accessToken);
   // }
-
-  // if (authorization !== process.env.AUTH_TOKEN) {
-  //   next(ApiError.badRequest('Authorization token is invalid'));
-  //   return;
-  // }
+  if (!authorization) {
+    next(ApiError.badRequest('Authorization header is missing'));
+    return;
+  }
+  if (authorization !== process.env.AUTH_TOKEN) {
+    next(ApiError.badRequest('Authorization token is invalid'));
+    return;
+  }
   //----->object store<------
   let recommendedArtists = [] as Artist[];
   let topTracks = [] as Curated[];
@@ -32,9 +34,7 @@ export const mainController = async (
     url: '',
     rating: 0,
   };
-
   //------>Search for recommendations<-----
-
   if (req.query.id) {
     ID = req.query.id as string;
   } else {
@@ -60,7 +60,6 @@ export const mainController = async (
   } else {
     next(ApiError.badRequest('Bad request something went wrong'));
   }
-
   //-------->Get recommended artist top tracks<--------
   if (recommendedArtists.length > 0) {
     try {
@@ -71,7 +70,6 @@ export const mainController = async (
       const data = response.map((data) => {
         return data.body.tracks;
       });
-
       if (data) {
         data.forEach((item) => {
           topTracks.push(
@@ -128,7 +126,6 @@ export const mainController = async (
   } else {
     next(ApiError.badRequest('Bad request something went wrong'));
   }
-
   //Get audio features for artist top tracks
   if (topTracks.length > 0) {
     const response = await Promise.all(

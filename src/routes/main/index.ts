@@ -8,7 +8,7 @@ import { user } from '../../controllers/main/user.controller';
 
 const router = express.Router();
 
-router.get('/', mainController);
+router.post('/', mainController);
 router.get('/pre-search', preSearchController);
 router.get('/test', testController);
 router.get('/artist', artistController);

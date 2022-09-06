@@ -11,11 +11,17 @@ export const login = async (
 
   try {
     const auth = await spotifyApi.authorizationCodeGrant(code);
-    const accessToken = auth.body.access_token;
-    const refreshToken = auth.body.refresh_token;
-    const expiresIn = auth.body.expires_in;
+    const access_token = auth.body.access_token;
+    const refresh_token = auth.body.refresh_token;
+    const expires_in = auth.body.expires_in;
 
-    res.json({ accessToken, refreshToken, expiresIn });
+    //get user
+    spotifyApi.setAccessToken(access_token);
+    const user = await spotifyApi.getMe();
+    const userTopArtists = await spotifyApi.getMyTopArtists({ limit: 10 });
+    //.....
+
+    res.json({ access_token, refresh_token, expires_in, user, userTopArtists });
   } catch (error: any) {
     next(ApiError.badRequest(error.message));
   }
@@ -32,9 +38,9 @@ export const refresh = async (
 
   try {
     const auth = await spotifyApi.refreshAccessToken();
-    const accessToken = auth.body.access_token;
-    const expiresIn = auth.body.expires_in;
-    res.json({ accessToken, expiresIn });
+    const access_token = auth.body.access_token;
+    const expires_in = auth.body.expires_in;
+    res.json({ access_token, expires_in });
   } catch (error: any) {
     next(ApiError.badRequest(error.message));
   }

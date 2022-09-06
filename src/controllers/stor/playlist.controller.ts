@@ -7,14 +7,13 @@ export const createPlaylist = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { access, playlistName, tracks, collaborative, publicPlaylist } =
-    req.body;
+  const { access, playlistName, tracks, publicPlaylist } = req.body;
 
   spotifyApi.setAccessToken(access);
 
   try {
     const createPlaylist = await spotifyApi.createPlaylist(playlistName, {
-      collaborative,
+      collaborative: false,
       public: publicPlaylist,
     });
     const playlistId = createPlaylist.body.id;
