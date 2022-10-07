@@ -13,7 +13,7 @@ router.get('/pre-search', preSearchController);
 router.get('/test', testController);
 router.get('/artist', artistController);
 router.post('/login', login);
-router.post('/refresh', refresh);
+router.post('/refresh');
 router.post('/user', user);
 
 export default router;
