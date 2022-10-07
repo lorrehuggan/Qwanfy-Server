@@ -14,7 +14,7 @@ export const spotifyApi = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   // accessToken: process.env.ACCESS_TOKEN,
-  redirectUri: 'http://localhost:3000/',
+  redirectUri: 'http://sazaana.com/',
   refreshToken: '',
 });
 
