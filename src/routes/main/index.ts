@@ -1,6 +1,6 @@
 import express from 'express';
 import { artistController } from '../../controllers/main/artist';
-import { login, refresh } from '../../controllers/main/login.controller';
+import { login } from '../../controllers/main/login.controller';
 import { mainController } from '../../controllers/main/main.controller';
 import { preSearchController } from '../../controllers/main/preSearch.controller';
 import { testController } from '../../controllers/main/test';
