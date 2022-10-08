@@ -12,8 +12,6 @@ export const preSearchController = async (
 
   const { authorization } = req.headers;
 
-  // res.redirect('');
-
   // if (!authorization) {
   //   next(ApiError.badRequest('Authorization header is missing'));
   //   return;
